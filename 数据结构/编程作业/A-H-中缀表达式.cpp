@@ -44,7 +44,7 @@ Tree *buildTree(string str, int start, int end) {
 
             if(currentP <= lowestP){
                 lowestP = currentP;
-                lowestIndex = 1;
+                lowestIndex = i;
             }
         }
     }
