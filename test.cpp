@@ -1,98 +1,66 @@
-#include <bits/stdc++.h>
+#include <queue>
+#include <cmath>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <algorithm>
+#define N 100010
+#define M 1010
 
 using namespace std;
+int n, m, add_edge, tot, cnt;
+int head[N], vis[N], ans[N];
+struct node {
+  int next, to;
+}edge[N << 1];
 
-
-int calculateResult(int a, int b, char o) {
-    int re = 0;
-    switch (o) {
-        case '+':
-            re = a + b;
-            break;
-        case '-':
-            re = a - b;
-            break;
-        case '*':
-            re = a * b;
-            break;
-        case '/':
-            re = a / b;
-            break;
-        default:
-            return 0;
-    }
-    return re;
+int read() {
+  int s = 0, f = 0; char ch = getchar();
+  while (!isdigit(ch)) f |= (ch == '-'), ch = getchar();
+  while (isdigit(ch)) s = s * 10 + (ch ^ 48), ch = getchar();
+  return f ? -s : s;
 }
 
-int getPriority(char c) {
-    if (c == '*' || c == '/')
-        return 2;
-    else if (c == '+' || c == '-')
-        return 1;
-    else
-        return 0;
+void add(int from, int to) {
+  edge[++add_edge].next = head[from];
+  edge[add_edge].to = to;
+  head[from] = add_edge;
 }
 
-int calculateExpression(string &expression) {
-    stack<int> num;
-    stack<char> op;
-    for (int i = 0; i < expression.length(); i++) {
-        if (expression[i] >= '0' && expression[i] <= '9') {
-            int temp = expression[i] - 48;
-            for (int j = i + 1; j < expression.length(); j++) {
-                if (!(expression[j] >= '0' && expression[j] <= '9')) {
-                    i = j-1;
-                    break;
-                }
-                temp = temp * 10 + expression[j] - 48;
-            }
-            num.push(temp);
-//            cout<<temp<<"\n";
-        } else if (expression[i] == '(') {
-            op.push(expression[i]);
-        } else if (expression[i] == ')') {
-            while (!op.empty() && op.top() != '(') {
-                char o = op.top();
-                op.pop();
-                int n_1 = num.top();
-                num.pop();
-                int n_2 = num.top();
-                num.pop();
-                int result = calculateResult(n_2, n_1, o);
-                num.push(result);
-            }
-            op.pop();
-        } else {
-            while (!op.empty() && op.top() != '(' && getPriority(expression[i])<= getPriority(op.top())) {
-                char o = op.top();
-                op.pop();
-                int n_1 = num.top();
-                num.pop();
-                int n_2 = num.top();
-                num.pop();
-                int result = calculateResult(n_2, n_1, o);
-                num.push(result);
-            }
-            op.push(expression[i]);
-        }
-    }
-    while (!op.empty()) {
-        char o = op.top();
-        op.pop();
-        int n_1 = num.top();
-        num.pop();
-        int n_2 = num.top();
-        num.pop();
-        int result = calculateResult(n_2, n_1, o);
-        num.push(result);
-    }
-   return num.top();
+void bfs(int st) {
+  queue<int> q;
+  q.push(st);
+//  vis[st] = 1;
+  while (!q.empty()) {
+    int fr = q.front();
+    q.pop();
+    if (vis[fr]) continue;
+    vis[fr] = 1;
+    cnt++;
+//    cout << fr << " ";
+    for (int i = head[fr]; i; i = edge[i].next) {
+      int to = edge[i].to;
+      if (!vis[to]) q.push(to);
+    } 
+  } 
 }
-
 
 int main() {
-    string expression;
-    cin>>expression;
-    cout << calculateExpression(expression) << endl;
-    return 0;
+  n = read(), m = read();
+  for (int i = 1, x, y; i <= m; i++) {
+    x = read(), y = read();
+    add(x, y), add(y, x);
+  }
+  for (int i = 1; i <= n; i++) 
+    if (!vis[i]) {
+      cnt = 0;
+      bfs(i);
+      if (cnt >= 2) ans[++tot] = cnt;
+//      puts("");
+//      ans[tot] = cnt;
+    }
+  sort(ans + 1, ans + tot + 1);
+  cout << tot << "\n";
+  for (int i = 1; i <= tot; i++) cout << ans[i] << " ";
+  puts("");
 }
