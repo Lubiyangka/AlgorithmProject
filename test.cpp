@@ -1,66 +1,58 @@
 #include <queue>
-#include <cmath>
 #include <cstdio>
-#include <cstring>
+#include <set>
+#include <string>
+#include <stack>
+#include <cmath>
+#include <climits>
+#include <map>
+#include <cstdlib>
 #include <iostream>
+#include <vector>
 #include <algorithm>
-#define N 100010
-#define M 1010
-
+#include <cstring>
 using namespace std;
-int n, m, add_edge, tot, cnt;
-int head[N], vis[N], ans[N];
-struct node {
-  int next, to;
-}edge[N << 1];
+typedef long long( LL);
+typedef unsigned long long( ULL);
+const double eps( 1e-8);
 
-int read() {
-  int s = 0, f = 0; char ch = getchar();
-  while (!isdigit(ch)) f |= (ch == '-'), ch = getchar();
-  while (isdigit(ch)) s = s * 10 + (ch ^ 48), ch = getchar();
-  return f ? -s : s;
+const int MAXN = 15010;
+struct N
+{
+    double x;
+    int p;
+} a [ MAXN ];
+int b [ MAXN ];
+
+int cmp(N a ,N b)
+{
+    return a . x <b . x;
 }
-
-void add(int from, int to) {
-  edge[++add_edge].next = head[from];
-  edge[add_edge].to = to;
-  head[from] = add_edge;
-}
-
-void bfs(int st) {
-  queue<int> q;
-  q.push(st);
-//  vis[st] = 1;
-  while (!q.empty()) {
-    int fr = q.front();
-    q.pop();
-    if (vis[fr]) continue;
-    vis[fr] = 1;
-    cnt++;
-//    cout << fr << " ";
-    for (int i = head[fr]; i; i = edge[i].next) {
-      int to = edge[i].to;
-      if (!vis[to]) q.push(to);
-    } 
-  } 
-}
-
-int main() {
-  n = read(), m = read();
-  for (int i = 1, x, y; i <= m; i++) {
-    x = read(), y = read();
-    add(x, y), add(y, x);
-  }
-  for (int i = 1; i <= n; i++) 
-    if (!vis[i]) {
-      cnt = 0;
-      bfs(i);
-      if (cnt >= 2) ans[++tot] = cnt;
-//      puts("");
-//      ans[tot] = cnt;
+int main()
+{
+    int n;
+    while( scanf( "%d" , &n) != EOF)
+    {
+        memset(b , 0 , sizeof(b));
+        for( int i = 0; i <n; i ++)
+            scanf( "%d%d" , & a [ i ]. x , & a [ i ].p);
+        sort( a , a +n , cmp);
+        int s = 0;
+        for( int i = 0; i <n; i ++)
+        {
+           s += a [ i ].p;
+           b [ i ] =s;
+        }
+        int mid =s / 2 , w;
+        for( int i = 0; i <n; i ++)
+        {
+            if(b [ i ] >= mid)
+            {
+                w = i;
+                break;
+            }
+        }
+        printf( "%d \n " , a [ w ]. x);
     }
-  sort(ans + 1, ans + tot + 1);
-  cout << tot << "\n";
-  for (int i = 1; i <= tot; i++) cout << ans[i] << " ";
-  puts("");
+    return 0;
 }
