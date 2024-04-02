@@ -23,7 +23,7 @@ struct Graph {
 };
 
 Graph graph{5, 7};
-//到最短路最后一个电的距离
+//到最短路最后一个点的距离
 int D[5];
 //是否遍历过
 bool final[5];
