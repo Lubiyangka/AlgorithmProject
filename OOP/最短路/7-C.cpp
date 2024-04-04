@@ -10,7 +10,7 @@ bool f[mm][mm];
 int main() {
     scanf("%d %d", &n, &m);
     for(int i = 1; i <= m; i++){
-        int x, y;
+        int x, y;   
         scanf("%d %d", &x, &y);
         f[x][y] = true;
     }
